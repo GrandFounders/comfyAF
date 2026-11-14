@@ -93,8 +93,6 @@ A thin bar on the pad shows the progress of a run; the top line says what is run
 - `phone/`: EcoRemote's phone page (`public/` there), with Mouse mode and the keyboard, trimmed to ComfyUI: no app picker, plugin menus, Panel mode or drawing tools; added ComfyUI's buttons (`js/comfy.js`). `comfyaf/input-helper.ps1` is EcoRemote's.
 - `web/lib/qrcode.js`: qrcode-generator as a module, for the side panel's QR code. `phone/vendor/` holds copies of KcadaBRA `hostKit` (shell drawer, dialogs and their CSS) and qrcode-generator 1.4.4 (MIT, Kazuhiko Arase).
 
-## Licence
-
 ## License
 
 This project is licensed under the GNU General Public License v3.0. 
