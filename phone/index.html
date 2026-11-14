@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover,interactive-widget=resizes-visual">
+<meta name="theme-color" content="#2e2e2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ComfyAF">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>ComfyAF</title>
+<!-- the KcadaBRA shared UI (hostKit shell drawer + dialogs), copied into vendor/ -->
+<link rel="stylesheet" href="vendor/shell.css">
+<link rel="stylesheet" href="vendor/host-services.css">
+<style>
+:root{
+  /* The page reads the shell tokens (--kairos-*); the five shell themes below set them (Kairos/css/shell.css palettes) */
+  --bg:var(--kairos-bg);--surface:var(--kairos-surface);--raised:var(--kairos-surface-elevated);--line:var(--kairos-border-strong);
+  --text:var(--kairos-text);--muted:var(--kairos-text-muted);--faint:var(--kairos-text-dim);
+  --accent:var(--kairos-accent);--accent-soft:var(--kairos-accent-muted);--accent-ink:#fff;--blue:var(--kairos-accent);
+  --warn:#c98a12;--danger:#c0392b;--mouse:#8a5cd0;
+  --tap:52px;
+  --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);--sal:env(safe-area-inset-left,0px);--sar:env(safe-area-inset-right,0px);
+}
+html,html[data-shell-theme="default"],html[data-shell-theme="warm"]{--kairos-bg:#f8f6f3;--kairos-surface:#fff;--kairos-surface-elevated:#f2efe9;--kairos-border:#ddd8cf;--kairos-border-strong:#d2cbc0;--kairos-text:#2d2926;--kairos-text-muted:#6b6560;--kairos-text-dim:#8f8983;--kairos-accent:#c17a2e;--kairos-accent-muted:rgba(193,122,46,.15);--kairos-hover-bg:rgba(0,0,0,.05);--grid:rgba(0,0,0,.1);color-scheme:light}
+html[data-shell-theme="slate"]{--kairos-bg:#eceff4;--kairos-surface:#fff;--kairos-surface-elevated:#e3e8f0;--kairos-border:#c5ceda;--kairos-border-strong:#aeb8c7;--kairos-text:#1a1d24;--kairos-text-muted:#5a6578;--kairos-text-dim:#7d889a;--kairos-accent:#5e81ac;--kairos-accent-muted:rgba(94,129,172,.17);--kairos-hover-bg:rgba(0,0,0,.05);--grid:rgba(0,0,0,.1);color-scheme:light}
+html[data-shell-theme="forest"]{--kairos-bg:#f2f7f4;--kairos-surface:#fff;--kairos-surface-elevated:#eaf0ec;--kairos-border:#c5d4c5;--kairos-border-strong:#b8c9b8;--kairos-text:#1a241e;--kairos-text-muted:#4a5c52;--kairos-text-dim:#738479;--kairos-accent:#2f6f4e;--kairos-accent-muted:rgba(47,111,78,.16);--kairos-hover-bg:rgba(0,0,0,.05);--grid:rgba(0,0,0,.1);color-scheme:light}
+html[data-shell-theme="photoshop"],
+html[data-shell-theme="blackred"],
+html[data-shell-theme="blackyellow"],
+html[data-shell-theme="blackgreen"],
+html[data-shell-theme="blackbrown"]{--kairos-bg:#2e2e2e;--kairos-surface:#3e3e3e;--kairos-surface-elevated:#454545;--kairos-border:#1e1e1e;--kairos-border-strong:#4a4a4a;--kairos-text:#ececec;--kairos-text-muted:#9a9a9a;--kairos-text-dim:#7a7a7a;--kairos-accent:#31a8ff;--kairos-accent-muted:rgba(49,168,255,.2);--kairos-hover-bg:rgba(255,255,255,.06);--grid:rgba(255,255,255,.09);color-scheme:dark}
+/* the black themes (mirror _EcoCore/jsCANVAS/theme/shell-theme-vars.css — this page is served on its own and cannot link it) */
+html[data-shell-theme="blackred"],html[data-shell-theme="blackyellow"],html[data-shell-theme="blackgreen"],html[data-shell-theme="blackbrown"]{--kairos-bg:#1a1a1a;--kairos-surface:#1e1e1e;--kairos-surface-elevated:#252525;--kairos-border:#0d0d0d;--kairos-border-strong:#333;--kairos-text:#f0f0f0;--kairos-text-muted:#b4b4b4;--kairos-text-dim:#8c8c8c;--kairos-hover-bg:#2a2a2a;--grid:rgba(255,255,255,.075);color-scheme:dark}
+html[data-shell-theme="blackred"]{--kairos-accent:#e60012;--kairos-accent-muted:rgba(230,0,18,.22)}
+html[data-shell-theme="blackyellow"]{--kairos-accent:#ffd000;--kairos-accent-muted:rgba(255,208,0,.2);--accent-ink:#111}
+html[data-shell-theme="blackgreen"]{--kairos-accent:#00c853;--kairos-accent-muted:rgba(0,200,83,.2);--accent-ink:#111}
+html[data-shell-theme="blackbrown"]{--kairos-accent:#c17a2e;--kairos-accent-muted:rgba(193,122,46,.24)}
+/* DarkAsFK — PowerPlay's grey scale (mirrors _EcoCore/jsCANVAS/theme/shell-theme-vars.css) */
+html[data-shell-theme="darkasfk"]{--kairos-bg:#111111;--kairos-surface:#222222;--kairos-surface-elevated:#2a2a2a;--kairos-border:#333333;--kairos-border-strong:#424242;--kairos-text:#c8c8c8;--kairos-text-muted:#9a9a9a;--kairos-text-dim:#787878;--kairos-accent:#888888;--kairos-accent-muted:rgba(136,136,136,.18);--kairos-hover-bg:#2a2a2a;--grid:#1e1e1e;--accent-ink:#111111;color-scheme:dark}
+html[data-shell-theme="darkasfkdeep"]{--kairos-bg:#0a0a0a;--kairos-surface:#161616;--kairos-surface-elevated:#1f1f1f;--kairos-border:#242424;--kairos-border-strong:#333333;--kairos-text:#bcbcbc;--kairos-text-muted:#8a8a8a;--kairos-text-dim:#6a6a6a;--kairos-accent:#8a8a8a;--kairos-accent-muted:rgba(138,138,138,.18);--kairos-hover-bg:#1f1f1f;--grid:#181818;--accent-ink:#0a0a0a;color-scheme:dark}
+html[data-shell-theme="darkasfkabyss"]{--kairos-bg:#050505;--kairos-surface:#0e0e0e;--kairos-surface-elevated:#161616;--kairos-border:#1a1a1a;--kairos-border-strong:#262626;--kairos-text:#b0b0b0;--kairos-text-muted:#7a7a7a;--kairos-text-dim:#5e5e5e;--kairos-accent:#7c7c7c;--kairos-accent-muted:rgba(124,124,124,.18);--kairos-hover-bg:#161616;--grid:#121212;--accent-ink:#050505;color-scheme:dark}
+html[data-shell-theme="kairos"]{--kairos-bg:#1a1a1c;--kairos-surface:#252528;--kairos-surface-elevated:#2d2d30;--kairos-border:rgba(255,255,255,.08);--kairos-border-strong:rgba(255,255,255,.15);--kairos-text:#e4e4e7;--kairos-text-muted:rgba(255,255,255,.6);--kairos-text-dim:rgba(255,255,255,.45);--kairos-accent:#0d9488;--kairos-accent-muted:rgba(13,148,136,.3);--kairos-hover-bg:rgba(255,255,255,.06);--grid:rgba(255,255,255,.09);color-scheme:dark}
+.shell-drawer{z-index:35}.shell-drawer-overlay{z-index:34}.host-modal-overlay{z-index:60}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:15px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;touch-action:manipulation}
+button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+[hidden]{display:none!important}
+code{font:12.5px ui-monospace,"SF Mono",Menlo,monospace;color:var(--blue)}
+
+/* ---------------------------------------------------------------- shell */
+#app{position:fixed;inset:0;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto auto;padding:calc(var(--sat) + 6px) calc(var(--sar) + 10px) calc(var(--sab) + 8px) calc(var(--sal) + 10px);gap:8px}
+#app>*{min-width:0}
+body.kbd-open #app{padding-bottom:calc(var(--kbd-h,0px) + 8px)}
+header{display:flex;align-items:center;gap:8px;min-height:44px}
+.target{flex:1;min-width:0;display:flex;align-items:center;gap:10px;height:46px;padding:0 12px;border-radius:12px;background:var(--surface);border:1px solid var(--line);text-align:left}
+.target .dot{width:9px;height:9px;border-radius:50%;background:var(--danger);flex:none;box-shadow:0 0 0 3px rgba(239,107,94,.15)}
+.target .dot.on{background:var(--accent);box-shadow:0 0 0 3px rgba(25,169,116,.18)}
+.target .dot.half{background:var(--warn);box-shadow:0 0 0 3px rgba(229,177,58,.18)}
+.target .txt{min-width:0;flex:1;display:flex;flex-direction:column}
+.target b{font-size:15px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.target small{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iconbtn{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);flex:none}
+.iconbtn:active,.target:active{background:var(--raised)}
+.iconbtn.plain{background:transparent;border-color:transparent;width:40px}
+.iconbtn.on{background:rgba(124,196,255,.14);border-color:rgba(124,196,255,.5);color:var(--blue)}
+
+/* ---------------------------------------------------------------- the pad (a trackpad: it never shows the canvas itself) */
+#pad{position:relative;overflow:hidden;border-radius:18px;background:var(--bg);border:1px solid var(--line);touch-action:none;min-height:0}
+#pad.mouse{border-color:var(--mouse);box-shadow:inset 0 0 0 1px var(--mouse)}
+#grid{position:absolute;inset:-48px;background-image:radial-gradient(circle,var(--grid) 1.2px,transparent 1.3px);background-size:24px 24px;pointer-events:none}
+
+.ripple{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:2px solid var(--blue);animation:rip .45s ease-out forwards;pointer-events:none;z-index:3}
+#pad.mouse .ripple{border-color:var(--mouse)}
+@keyframes rip{from{transform:scale(.3);opacity:.9}to{transform:scale(1.4);opacity:0}}
+.hud{position:absolute;left:10px;bottom:10px;display:flex;gap:6px;pointer-events:none;z-index:2;flex-wrap:wrap;right:64px}
+.pill{padding:4px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font:600 12px/1.2 ui-monospace,"SF Mono",Menlo,monospace;color:var(--muted)}
+.pill.zoom{color:var(--blue)}.pill.sel{color:var(--accent);border-color:var(--accent)}.pill.m{color:var(--mouse);border-color:var(--mouse)}.pill.hold{color:#fff;background:#6c3fb5;border-color:#6c3fb5}
+.fab{position:absolute;right:10px;bottom:var(--save-bottom,10px);z-index:7;width:30px;height:28px;border-radius:8px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);color:var(--muted);transition:bottom .2s}
+.fab svg.i{width:16px;height:16px}
+.fab:active{background:var(--kairos-hover-bg)}
+.hint{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;color:var(--faint);font-size:13px;pointer-events:none;transition:opacity .4s;padding:0 28px;line-height:1.7}
+.empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:28px;color:var(--muted);pointer-events:none;line-height:1.5;z-index:1;background:var(--bg)}
+.empty b{display:block;color:var(--text);font-size:16px;margin-bottom:6px}
+
+/* ---------------------------------------------------------------- the preview window: stays put, snaps to a corner, resizable */
+#pip{position:absolute;z-index:6;left:0;top:0;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:0 12px 32px rgba(0,0,0,.55);overflow:hidden;touch-action:none;display:flex;flex-direction:column;transition:transform .22s cubic-bezier(.2,.8,.2,1),width .12s,height .12s}
+#pip.moving{transition:none;box-shadow:0 18px 44px rgba(0,0,0,.7);opacity:.94}
+#pip.mouse{border-color:var(--mouse)}
+.pip-bar{height:32px;flex:none;display:flex;align-items:center;gap:2px;padding:0 3px 0 10px;background:var(--kairos-hover-bg);border-bottom:1px solid var(--line);font-size:11.5px;font-weight:650;color:var(--muted);letter-spacing:.02em}
+.pip-bar .grow{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pip-bar button{width:30px;height:28px;border-radius:8px;display:grid;place-items:center;color:var(--muted)}
+.pip-bar button:active{background:var(--kairos-hover-bg)}
+.pip-bar svg.i{width:16px;height:16px}
+#pipRefresh.spin svg{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pip-view{position:relative;flex:1;background:#000;overflow:hidden}
+.pip-view img{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none;opacity:0;transition:opacity .15s}
+.pip-view img.ready{opacity:1}
+.pip-view .none{position:absolute;inset:0;display:grid;place-items:center;color:var(--faint);font-size:12px;text-align:center;padding:8px}
+#marks{position:absolute;inset:0;pointer-events:none}
+.mark{position:absolute;border:2px solid var(--blue);border-radius:2px}
+#cursorDot{position:absolute;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;border:2px solid var(--mouse);box-shadow:0 0 0 2px rgba(0,0,0,.5);pointer-events:none}
+.pip-grip{position:absolute;width:30px;height:30px;display:grid;place-items:center;color:rgba(255,255,255,.6);z-index:2}
+.pip-grip svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round}
+#pip.min .pip-view,#pip.min .pip-grip{display:none}
+#pip.min{width:auto!important;height:auto!important}
+
+/* ---------------------------------------------------------------- ComfyUI's buttons (Queue · Cancel · the latest image) and the progress bar */
+.tools .tsep{flex:none;width:1px;align-self:stretch;margin:6px 1px;background:var(--line)}
+.tool.cbtn{min-width:58px}
+.tool.cbtn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tool.cbtn.primary svg.i{color:var(--accent-ink)}
+#queueCount{position:absolute;right:4px;top:4px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--accent-ink);color:var(--accent);font:700 10px/16px ui-monospace,monospace;text-align:center}
+#latestBtn{overflow:hidden}
+#latestImg{position:absolute;inset:2px;width:calc(100% - 4px);height:calc(100% - 4px);object-fit:cover;border-radius:9px;opacity:.9}
+#latestBtn .over{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:2px;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+#latestImg:not([hidden])+.over{color:#fff}
+#progress{position:absolute;left:0;right:0;top:0;height:3px;z-index:8;overflow:hidden;pointer-events:none}
+#progress>i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
+#progress.busy>i{width:30%!important;animation:busy 1.2s ease-in-out infinite}
+@keyframes busy{from{transform:translateX(-100%)}to{transform:translateX(340%)}}
+/* ---------------------------------------------------------------- tools, mouse buttons, actions */
+.tools{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:1px}
+.tools::-webkit-scrollbar{display:none}
+.tool{position:relative;flex:1 0 auto;min-width:56px;height:48px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:var(--surface);border:1px solid var(--line);color:var(--muted);font-size:10.5px;font-weight:600;letter-spacing:.02em}
+.tool svg.i{width:19px;height:19px}
+.tool.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.tool .gl{font-size:18px;line-height:1;color:var(--text)}.tool.on .gl{color:var(--accent)}
+.tool .corner{position:absolute;right:4px;top:4px;width:7px;height:7px;border-right:2px solid var(--mouse);border-top:2px solid var(--mouse);border-radius:1px;opacity:.8}
+.tool.pressing{background:rgba(138,92,208,.16);border-color:var(--mouse);color:var(--mouse)}
+.mbtn{flex:1 0 auto;min-width:58px;height:48px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:var(--surface);border:1px solid var(--line);color:var(--text);font-size:10.5px;font-weight:650}
+.mbtn svg.i{width:19px;height:19px}
+.mbtn.on{background:#6c3fb5;border-color:#6c3fb5;color:#fff}
+.mbtn.exit{color:var(--mouse);border-color:var(--mouse)}
+.bar{display:flex;gap:2px;padding:4px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.bar .sep{flex:none;width:1px;align-self:stretch;margin:8px 2px;background:var(--line)}
+.act{flex:1;min-width:0;height:48px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:transparent;border:0;font-size:10.5px;color:var(--muted);font-weight:600}
+.act.on{background:var(--accent-soft);color:var(--accent)}.act.on svg.i{color:var(--accent)}
+.act svg.i{color:var(--text)}
+.act:active,.tool:active,.mbtn:active{transform:scale(.96);background:var(--raised)}
+.act.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.act.primary svg.i{color:var(--accent-ink)}
+.disabled{opacity:.38;pointer-events:none}
+
+@media (orientation:landscape) and (max-height:560px){
+  #app{grid-template-columns:minmax(0,1fr) 228px;grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"head head" "pad side" "pad bar"}
+  header{grid-area:head}#pad{grid-area:pad}
+  .tools{grid-area:side;display:grid;grid-template-columns:1fr 1fr 1fr;align-content:start;overflow:visible}
+  .tool,.mbtn{min-width:0}.tools .tsep{display:none}.bar,#mouseRow{grid-area:bar}#mouseRow{display:flex}
+}
+
+/* ---------------------------------------------------------------- the keyboard bar (sits on top of the phone's keyboard) */
+#kbd{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);padding:8px calc(var(--sar) + 8px) calc(var(--sab) + 8px) calc(var(--sal) + 8px);display:flex;flex-direction:column;gap:7px;box-shadow:0 -10px 30px rgba(0,0,0,.4)}
+.kin{display:flex;gap:6px;align-items:center}
+#kbdInput{flex:1;min-width:0;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:16px system-ui,sans-serif;padding:0 12px;-webkit-user-select:text;user-select:text;caret-color:var(--blue)}
+#kbdInput:focus{outline:2px solid var(--blue);border-color:transparent}
+.krow{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none}
+.krow::-webkit-scrollbar{display:none}
+.key{flex:1 0 auto;min-width:44px;height:40px;padding:0 9px;border-radius:10px;background:var(--raised);border:1px solid var(--line);font-size:13px;font-weight:650;display:grid;place-items:center;white-space:nowrap}
+.key:active{background:var(--kairos-hover-bg);transform:scale(.96)}
+.key.mod.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.kin .key.close{flex:0 0 44px;min-width:44px;height:44px;padding:0;color:var(--muted)}
+
+/* ---------------------------------------------------------------- the full-screen viewer (a snapshot, at scale) */
+#viewer{position:fixed;inset:0;z-index:45;background:#0b0b0c;touch-action:none;overflow:hidden}
+#viewerImg{position:absolute;left:0;top:0;transform-origin:0 0;max-width:none;pointer-events:none;-webkit-user-drag:none;image-rendering:auto}
+#viewer .vbar{position:absolute;top:calc(var(--sat) + 8px);left:calc(var(--sal) + 10px);right:calc(var(--sar) + 10px);display:flex;align-items:center;gap:6px;z-index:2}
+#viewer .vbar span{flex:1;font-size:13px;font-weight:650;color:#e8e8ea;text-shadow:0 1px 3px #000}
+#viewer .vbar button{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:rgba(30,30,34,.82);border:1px solid rgba(255,255,255,.14);color:#f2f2f4}
+#viewer .vbar button:active{background:rgba(60,60,66,.9)}
+#viewerRefresh.spin svg{animation:spin .8s linear infinite}
+#viewer .vhint{position:absolute;left:0;right:0;bottom:calc(var(--sab) + 14px);text-align:center;font-size:12px;color:rgba(255,255,255,.55);pointer-events:none}
+
+/* ---------------------------------------------------------------- pair screen + toasts */
+#pair{position:fixed;inset:0;z-index:40;background:var(--bg);display:grid;place-items:center;padding:24px}
+#pair form{width:100%;max-width:360px}
+#pair h1{font-size:24px;margin:0 0 8px}
+#pair p{color:var(--muted);margin:0 0 20px;line-height:1.5}
+#pair input{width:100%;height:58px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--text);font:600 20px ui-monospace,monospace;letter-spacing:.12em;text-align:center;text-transform:uppercase;padding:0 12px;-webkit-user-select:text;user-select:text}
+#pair input:focus{outline:2px solid var(--blue);border-color:transparent}
+#pair button{margin-top:12px;width:100%;height:56px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:16px}
+#pair .err{color:var(--danger);min-height:20px;margin-top:10px;font-size:13.5px}
+#toasts{position:fixed;left:12px;right:12px;top:calc(var(--sat) + 60px);z-index:50;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+.toast{max-width:520px;padding:10px 14px;border-radius:12px;background:var(--raised);color:var(--text);border:1px solid var(--line);box-shadow:0 8px 24px rgba(0,0,0,.4);font-size:13.5px;animation:tin .2s ease-out}
+.toast.error{border-color:rgba(239,107,94,.55)}.toast.ok{border-color:rgba(25,169,116,.5)}
+@keyframes tin{from{transform:translateY(-8px);opacity:0}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></symbol>
+  <symbol id="i-redo" viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></symbol>
+  <symbol id="i-fit" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></symbol>
+  <symbol id="i-one" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M11 8v6M9.5 9 11 8"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></symbol>
+  <symbol id="i-select" viewBox="0 0 24 24"><path d="m4 4 7 17 2.5-7.5L21 11z"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.990-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.6 7.6"/><circle cx="11" cy="11" r="2"/></symbol>
+  <symbol id="i-marker" viewBox="0 0 24 24"><path d="m9 11-6 6v3h9l3-3"/><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"/></symbol>
+  <symbol id="i-eraser" viewBox="0 0 24 24"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7M5 11l9 9"/></symbol>
+  <symbol id="i-zoom" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M11 8v6M8 11h6"/></symbol>
+  <symbol id="i-dl" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36L21 8"/><path d="M21 3v5h-5"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.680 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-all" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" stroke-dasharray="3 3"/><rect x="8" y="8" width="8" height="8" rx="1"/></symbol>
+  <symbol id="i-dup" viewBox="0 0 24 24"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M4 16V5a2 2 0 0 1 2-2h11"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></symbol>
+  <symbol id="i-none" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" stroke-dasharray="3 3"/><path d="m9 9 6 6M15 9l-6 6"/></symbol>
+  <symbol id="i-magnet" viewBox="0 0 24 24"><path d="m6 15-4-4 6.75-6.77a7.79 7.79 0 0 1 11 11L13 22l-4-4 6.39-6.36a2.14 2.14 0 0 0-3-3L6 15"/><path d="m5 8 4 4M12 15l4 4"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></symbol>
+  <symbol id="i-tab" viewBox="0 0 24 24"><path d="M3 8V5a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 11v6M9 14h6"/></symbol>
+  <symbol id="i-page" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></symbol>
+  <symbol id="i-board" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></symbol>
+  <symbol id="i-web" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></symbol>
+  <symbol id="i-mouse" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="6"/><path d="M12 7v4"/></symbol>
+  <symbol id="i-kbd" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></symbol>
+  <symbol id="i-lclick" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="6"/><path d="M12 3v8H6" fill="currentColor" fill-opacity=".35"/></symbol>
+  <symbol id="i-rclick" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="6"/><path d="M12 3v8h6" fill="currentColor" fill-opacity=".35"/></symbol>
+  <symbol id="i-mclick" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="6"/><rect x="10.5" y="5.5" width="3" height="5" rx="1.5" fill="currentColor"/></symbol>
+  <symbol id="i-hold" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="6"/><path d="M12 7v4M9 15l3 3 3-3"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-min" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-max" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></symbol>
+  <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></symbol>
+  <symbol id="i-canvas" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="5" width="7" height="5" rx="1"/><rect x="6" y="14" width="9" height="7" rx="1"/></symbol>
+</svg>
+
+<div id="app">
+  <header>
+    <button class="iconbtn plain" id="menuBtn" aria-label="Menu"><span style="font-size:22px;line-height:1">☰</span></button>
+    <button class="target" id="targetBtn" aria-haspopup="dialog">
+      <span class="dot" id="dot"></span>
+      <span class="txt"><b id="targetName">Connecting…</b><small id="targetSub">ComfyAF</small></span>
+      <svg class="i" style="color:var(--muted)"><use href="#i-chev"/></svg>
+    </button>
+    <button class="iconbtn" id="kbdBtn" aria-label="Keyboard"><svg class="i"><use href="#i-kbd"/></svg></button>
+    <button class="iconbtn" id="settingsBtn" aria-label="Settings"><svg class="i"><use href="#i-gear"/></svg></button>
+  </header>
+
+  <div id="pad" aria-label="Touch pad">
+    <div id="grid"></div>
+    <div id="progress" hidden><i></i></div>
+    <div class="hint" id="hint"></div>
+    <div class="empty" id="empty" hidden></div>
+    <div class="hud"><span class="pill zoom" id="zoomPill">—</span><span class="pill sel" id="selPill" hidden></span><span class="pill m" id="mousePill" hidden>Mouse</span><span class="pill hold" id="holdPill" hidden>Holding</span></div>
+    <button id="padSave" class="fab" hidden aria-label="Save the picture"><svg class="i"><use href="#i-dl"/></svg></button>
+    <div id="pip" hidden>
+      <div class="pip-bar" id="pipBar"><span class="grow" id="pipTitle">Graph</span>
+        <button id="pipFull" aria-label="View it full screen"><svg class="i"><use href="#i-expand"/></svg></button>
+        <button id="pipSave" aria-label="Save the picture"><svg class="i"><use href="#i-dl"/></svg></button>
+        <button id="pipRefresh" aria-label="Refresh the picture"><svg class="i"><use href="#i-refresh"/></svg></button>
+        <button id="pipMin" aria-label="Minimise the preview"><svg class="i"><use href="#i-min"/></svg></button></div>
+      <div class="pip-view" id="pipView"><img id="shot" alt=""><div id="marks"></div><div id="cursorDot" hidden></div><div class="none" id="pipNone">Waiting for a picture…</div></div>
+      <div class="pip-grip" id="pipGrip" aria-label="Resize the preview"><svg viewBox="0 0 16 16"><path d="M15 5 5 15M15 10l-5 5"/></svg></div>
+    </div>
+  </div>
+
+  <div class="tools" id="tools" role="toolbar" aria-label="Tools">
+    <span class="tsep"></span>
+    <button class="tool cbtn primary" id="queueBtn"><svg class="i"><use href="#i-play"/></svg>Queue<span id="queueCount" hidden></span></button>
+    <button class="tool cbtn" id="cancelBtn"><svg class="i"><use href="#i-stop"/></svg>Cancel</button>
+    <button class="tool cbtn" id="latestBtn" aria-label="The latest image"><img id="latestImg" alt="" hidden><span class="over"><svg class="i"><use href="#i-image"/></svg>Latest</span></button>
+  </div>
+  <div class="tools" id="mouseRow" role="toolbar" aria-label="Mouse buttons — tap to click, hold to keep pressed" hidden>
+    <button class="mbtn" data-m="left"><svg class="i"><use href="#i-lclick"/></svg>Left</button>
+    <button class="mbtn" data-m="right"><svg class="i"><use href="#i-rclick"/></svg>Right</button>
+    <button class="mbtn" data-m="dbl"><svg class="i"><use href="#i-lclick"/></svg>Double</button>
+    <button class="mbtn" data-m="middle"><svg class="i"><use href="#i-mclick"/></svg>Middle</button>
+  </div>
+
+  <nav class="bar" id="dock" aria-label="Tools Dock Strip">
+    <button class="act" data-cmd="undo"><svg class="i"><use href="#i-undo"/></svg>Undo</button>
+    <button class="act" data-cmd="redo"><svg class="i"><use href="#i-redo"/></svg>Redo</button>
+    <span class="sep"></span>
+    <button class="act" data-cmd="fitContent"><svg class="i"><use href="#i-fit"/></svg>Fit</button>
+    <button class="act" data-cmd="zoomReset"><svg class="i"><use href="#i-one"/></svg>100%</button>
+  </nav>
+</div>
+
+<div id="kbd" hidden>
+  <div class="kin">
+    <input id="kbdInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="send" aria-label="Type on the computer" placeholder="Type — it goes to the computer">
+    <button class="key close" id="kbdClose" aria-label="Close the keyboard"><svg class="i" style="width:18px;height:18px"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="krow" id="krow1"></div>
+  <div class="krow" id="krow2"></div>
+</div>
+
+
+
+<div id="pair" hidden>
+  <form id="pairForm" autocomplete="off">
+    <h1>Pair with your computer</h1>
+    <p>In ComfyUI on the computer, open the <b>ComfyAF</b> panel (📱 in the left bar) and scan the code with this phone's camera — or type the key shown there.</p>
+    <input id="pairKey" inputmode="text" autocapitalize="characters" spellcheck="false" placeholder="ABCD-EFGH-JKMN" aria-label="Pairing key">
+    <button type="submit">Connect</button>
+    <div class="err" id="pairErr" role="alert"></div>
+  </form>
+</div>
+<div id="viewer" hidden role="dialog" aria-modal="true" aria-labelledby="viewerTitle">
+  <img id="viewerImg" alt="">
+  <div class="vbar"><span id="viewerTitle">Graph</span>
+    <button id="viewerSave" aria-label="Save the picture"><svg class="i"><use href="#i-dl"/></svg></button>
+    <button id="viewerFit" aria-label="Fit to the screen"><svg class="i"><use href="#i-fit"/></svg></button>
+    <button id="viewerRefresh" aria-label="Take a new picture"><svg class="i"><use href="#i-refresh"/></svg></button>
+    <button id="viewerClose" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="vhint">Pinch to zoom · drag to move · double-tap to zoom in / out</div>
+</div>
+<div id="toasts" aria-live="polite"></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

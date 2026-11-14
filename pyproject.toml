@@ -1,0 +1,15 @@
+[project]
+name = "comfyaf"
+description = "From the KCadabra workspace OS: CanvasAssist (rest on a small node to zoom toward it, scroll at the edges, circle the mouse to zoom) and a phone remote for ComfyUI (pan, pinch, Queue, Cancel, the latest image)."
+version = "0.2.0"
+# TODO before publishing: choose the licence (see README › Licence), e.g. license = { file = "LICENSE" }
+dependencies = []
+
+[project.urls]
+Repository = ""   # TODO: the public repository
+# Homepage = "https://…"   # TODO: the KCadabra website
+
+[tool.comfy]
+PublisherId = ""   # TODO: your Comfy Registry publisher id
+DisplayName = "ComfyAF"
+Icon = ""

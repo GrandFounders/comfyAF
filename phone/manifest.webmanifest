@@ -1,0 +1,19 @@
+{
+  "name": "ComfyAF — ComfyUI from your phone",
+  "short_name": "ComfyAF",
+  "description": "Drive ComfyUI's graph from your phone: pan, pinch, Queue, the latest image.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#2e2e2e",
+  "theme_color": "#2e2e2e",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

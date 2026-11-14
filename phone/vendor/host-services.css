@@ -1,0 +1,162 @@
+/* hostKit/host-services.css — L2 host services: dialogs, document picker, settings modal, long menus.
+   Shared by every ecosystem host; moved out of Kairos (css/) 2026-10-18.
+   Colours come from the host's theme tokens (--kairos-* — the names StanDARD shell.css defines;
+   see hostKit/README.md for the list). Every token has a fallback, so a host without them still works. */
+
+.host-modal-overlay {
+  position: fixed; inset: 0; z-index: 20000;
+  display: none; align-items: center; justify-content: center;
+  padding: 16px; box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.45);
+  font-family: var(--kairos-font, system-ui, sans-serif);
+}
+.host-modal-overlay.show { display: flex; }
+.host-dialog-overlay { z-index: 20010; }          /* a dialog opened from inside settings stays on top */
+
+.host-modal {
+  display: flex; flex-direction: column;
+  width: 100%; max-width: 440px; max-height: calc(100vh - 32px);
+  background: var(--kairos-surface-elevated, #fff);
+  color: var(--kairos-text, #222);
+  border: 1px solid var(--kairos-border-strong, #ccc);
+  border-radius: var(--kairos-radius-lg, 10px);
+  box-shadow: var(--kairos-shadow-lg, 0 12px 40px rgba(0, 0, 0, 0.3));
+  overflow: hidden;
+}
+.host-modal-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px 18px; border-bottom: 1px solid var(--kairos-border, #e5e5e5);
+}
+.host-modal-title { margin: 0; font-size: 15px; font-weight: 600; }
+.host-modal-close {
+  width: 28px; height: 28px; border: 0; border-radius: var(--kairos-radius-sm, 4px);
+  background: none; color: var(--kairos-text-muted, #666); font-size: 20px; line-height: 1; cursor: pointer;
+}
+.host-modal-close:hover { background: var(--kairos-hover-bg, rgba(0, 0, 0, 0.06)); color: var(--kairos-text, #222); }
+.host-modal-body { padding: 16px 18px; overflow-y: auto; flex: 1; }
+.host-modal-footer {
+  display: flex; justify-content: flex-end; gap: 8px;
+  padding: 12px 18px; border-top: 1px solid var(--kairos-border, #e5e5e5);
+}
+
+.host-btn {
+  padding: 7px 14px; font: inherit; font-size: 13px; cursor: pointer;
+  color: var(--kairos-text, #222); background: var(--kairos-surface, #f4f4f4);
+  border: 1px solid var(--kairos-border-strong, #ccc); border-radius: var(--kairos-radius-sm, 4px);
+}
+.host-btn:hover { background: var(--kairos-hover-bg, #eaeaea); }
+.host-btn-primary { background: var(--kairos-accent, #c17a2e); border-color: var(--kairos-accent, #c17a2e); color: #fff; }
+.host-btn-primary:hover { background: var(--kairos-accent-hover, #c45c1a); }
+.host-btn-danger { background: #b3261e; border-color: #b3261e; color: #fff; }
+.host-btn-danger:hover { background: #8c1d18; }
+.host-btn:focus-visible, .host-modal-close:focus-visible, .host-settings-tab:focus-visible, .host-theme-option:focus-visible {
+  outline: 2px solid var(--kairos-accent, #c17a2e); outline-offset: 2px;
+}
+
+.host-input {
+  width: 100%; box-sizing: border-box; padding: 8px 10px; font: inherit; font-size: 13px;
+  color: var(--kairos-text, #222); background: var(--kairos-bg, #fff);
+  border: 1px solid var(--kairos-border-strong, #ccc); border-radius: var(--kairos-radius-sm, 4px);
+}
+.host-input:focus { outline: none; border-color: var(--kairos-accent, #c17a2e); }
+.host-dialog-message { margin: 0 0 12px; font-size: 13px; line-height: 1.5; white-space: pre-wrap; }
+.host-dialog-message:last-child { margin-bottom: 0; }
+
+/* ---- document picker (js/host-document-picker.js renders the rows) ---- */
+.host-picker { max-width: 900px; height: min(720px, calc(100vh - 32px)); }
+.host-picker-intro { margin: 0 0 12px; font-size: 13px; color: var(--kairos-text-muted, #666); }
+.host-picker-search { margin-bottom: 12px; }
+.host-picker-count { margin-bottom: 12px; font-size: 12px; color: var(--kairos-text-muted, #666); }
+.host-picker-count-row { display: flex; justify-content: space-between; align-items: center; }
+.host-picker-count-row label { cursor: pointer; }
+.host-picker-list { display: flex; flex-direction: column; gap: 10px; }
+.host-picker-empty { text-align: center; padding: 40px 16px; color: var(--kairos-text-muted, #666); }
+.host-picker-empty h3 { margin: 0 0 8px; font-size: 14px; color: var(--kairos-text, #222); }
+
+/* ---- settings ---- */
+.host-settings { max-width: 960px; height: min(680px, calc(100vh - 32px)); }
+.host-settings-body { flex: 1; display: flex; min-height: 0; }
+.host-settings-tabs {
+  flex: 0 0 180px; display: flex; flex-direction: column; gap: 2px; padding: 10px 8px;
+  border-right: 1px solid var(--kairos-border, #e5e5e5); overflow-y: auto;
+}
+.host-settings-tab {
+  text-align: left; padding: 8px 10px; font: inherit; font-size: 13px; cursor: pointer;
+  color: var(--kairos-text, #222); background: none; border: 0; border-radius: var(--kairos-radius-sm, 4px);
+}
+.host-settings-tab:hover { background: var(--kairos-hover-bg, #eee); }
+.host-settings-tab.active { background: var(--kairos-accent-muted, rgba(193, 122, 46, 0.16)); color: var(--kairos-text, #222); font-weight: 600; }
+.host-settings-panels { flex: 1; min-width: 0; display: flex; }
+.host-settings-panel { flex: 1; min-width: 0; overflow-y: auto; }
+.host-settings-panel[hidden] { display: none; }
+.host-settings-section { padding: 18px 22px; }
+.host-settings-heading { margin: 0 0 4px; font-size: 14px; }
+.host-settings-hint { margin: 0 0 14px; font-size: 12px; color: var(--kairos-text-muted, #666); }
+.host-theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.host-theme-option {
+  padding: 12px; font: inherit; font-size: 13px; cursor: pointer; text-align: left;
+  color: var(--kairos-text, #222); background: var(--kairos-surface, #f4f4f4);
+  border: 1px solid var(--kairos-border-strong, #ccc); border-radius: var(--kairos-radius-md, 6px);
+}
+.host-theme-option[aria-checked="true"] { border-color: var(--kairos-accent, #c17a2e); box-shadow: inset 0 0 0 1px var(--kairos-accent, #c17a2e); font-weight: 600; }
+.host-settings-frame { display: block; width: 100%; height: 100%; border: 0; background: #fff; }
+
+@media (max-width: 640px) {
+  .host-settings-body { flex-direction: column; }
+  .host-settings-tabs { flex: 0 0 auto; flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--kairos-border, #e5e5e5); }
+}
+
+/* ---- long menus ----
+   Plugin menus can be long (GuapXL contributes 30+ items in six sections). A dropdown is
+   position:fixed under the menu bar, so without a cap the bottom items fall off the screen with
+   no way to reach them. Cap at the viewport and scroll inside the menu instead. */
+.menu-bar-dropdown { max-height: calc(100vh - 40px); overflow-y: auto; overscroll-behavior: contain; }
+
+/* ---- AI link chip (host/agentlink.js): shown only while an AI client is linked ---------------- */
+.host-agent-chip {
+  position: fixed; right: 14px; bottom: 34px; z-index: 2147483000;
+  padding: 5px 11px; border-radius: 999px; cursor: pointer; user-select: none;
+  font: 600 12px/1.3 var(--kairos-font, system-ui, sans-serif);
+  background: var(--kairos-surface-elevated, #24262b); color: var(--kairos-text, #e8e8e8);
+  border: 1px solid var(--kairos-accent, #19a974); box-shadow: var(--kairos-shadow-lg, 0 6px 20px rgba(0,0,0,.35));
+  max-width: 46vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.host-agent-chip::first-letter { color: var(--kairos-accent, #19a974); }
+.host-agent-chip.is-busy { animation: host-agent-pulse 1s ease-in-out infinite; }
+.host-agent-chip.is-paused { border-color: #d9a400; }
+.host-agent-chip.is-paused::first-letter { color: #d9a400; }
+@keyframes host-agent-pulse { 50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--kairos-accent, #19a974) 35%, transparent); } }
+.host-agent-menu {
+  position: fixed; right: 14px; bottom: 66px; z-index: 2147483001; min-width: 250px; max-width: 360px;
+  padding: 6px; border-radius: var(--kairos-radius-md, 8px);
+  background: var(--kairos-surface-elevated, #24262b); color: var(--kairos-text, #e8e8e8);
+  border: 1px solid var(--kairos-border, #3a3d44); box-shadow: var(--kairos-shadow-lg, 0 6px 20px rgba(0,0,0,.35));
+  font: 12px/1.4 var(--kairos-font, system-ui, sans-serif);
+}
+.host-agent-menu button {
+  display: block; width: 100%; text-align: left; padding: 6px 8px; border: 0; border-radius: 6px;
+  background: transparent; color: inherit; font: inherit; cursor: pointer;
+}
+.host-agent-menu button:hover { background: var(--kairos-hover-bg, rgba(255,255,255,.08)); }
+.host-agent-menu .host-agent-strong { font-weight: 600; }
+.host-agent-menu-head { padding: 8px 8px 3px; color: var(--kairos-text-muted, #9aa0a6); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.host-agent-recent { padding: 2px 8px; color: var(--kairos-text-muted, #9aa0a6); font-family: ui-monospace, monospace; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.host-agent-recent.is-error { color: #e57373; }
+@media (max-width: 720px) { .host-agent-chip { bottom: 70px; } .host-agent-menu { bottom: 104px; } }
+
+/* ---- Settings › Canvas › CanvasAssist: sliders (host/settings.js › canvasAssistSection) ---- */
+.host-assist-section { padding: 0; }
+.host-assist-section > .host-settings-section { padding-bottom: 6px; }
+.host-tune { padding: 4px 22px 18px; display: grid; gap: 14px; max-width: 520px; }
+.host-tune-row { display: grid; gap: 6px; }
+.host-tune-label { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 13px; }
+.host-tune-value { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--kairos-text, #222); white-space: nowrap; }
+.host-tune-hint { font-size: 12px; color: var(--kairos-text-muted, #666); margin-top: -2px; }
+.host-tune input[type="range"] { width: 100%; margin: 0; accent-color: var(--kairos-accent, #c17a2e); cursor: pointer; }
+.host-tune-toggle { grid-template-columns: auto 1fr; align-items: center; gap: 8px; font-size: 13px; }
+.host-tune-toggle input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: var(--kairos-accent, #c17a2e); cursor: pointer;
+  /* an app's own CSS may hide native checkboxes (GuaP does) — this one must always show */
+  appearance: auto; -webkit-appearance: checkbox; opacity: 1; position: static; display: inline-block; visibility: visible; }
+.host-tune-disabled { opacity: 0.45; }
+.host-tune-disabled input { cursor: default; }
+.host-tune-actions { display: flex; justify-content: flex-start; padding-top: 4px; }

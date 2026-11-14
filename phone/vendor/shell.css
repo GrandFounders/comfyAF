@@ -1,0 +1,328 @@
+/* hostKit/shell/shell.css — the shared look of the components OUTSIDE the canvas:
+   Menu (menu bar, dropdowns, torn-off menus), Ribbon, Left/Right panels, OS Dock, and their phone
+   forms (the drawer, the bands). Replaces the menu-bar CSS that was copied into every app.
+
+   Colours come from the host tokens every app already sets (--kairos-*, hostKit/README.md), read
+   through --shell-* so an app can override just the shell. Light and dark both follow the app's
+   own tokens (html[data-shell-theme]). */
+
+:root {
+  --shell-font: var(--kairos-font, 'Segoe UI', system-ui, -apple-system, sans-serif);
+  --shell-bg: var(--kairos-bg, #f3f4f6);
+  --shell-surface: var(--kairos-surface, #ffffff);
+  --shell-elevated: var(--kairos-surface-elevated, var(--kairos-surface, #ffffff));
+  --shell-line: var(--kairos-border, #e3e6eb);
+  --shell-line-strong: var(--kairos-border-strong, #cfd4dc);
+  --shell-text: var(--kairos-text, #1d2430);
+  --shell-muted: var(--kairos-text-muted, #5f6b7a);
+  --shell-dim: var(--kairos-text-dim, #8a94a3);
+  --shell-accent: var(--kairos-accent, #2f6fd6);
+  --shell-accent-soft: var(--kairos-accent-muted, rgba(47, 111, 214, 0.14));
+  --shell-hover: var(--kairos-hover-bg, rgba(0, 0, 0, 0.05));
+  --shell-radius-sm: var(--kairos-radius-sm, 4px);
+  --shell-radius-md: var(--kairos-radius-md, 6px);
+  --shell-shadow: var(--kairos-shadow-lg, 0 12px 32px rgba(16, 24, 40, 0.16));
+  --shell-menubar-h: 34px;
+  --shell-band-head: 44px;
+  --shell-band-max: 36vh;
+  --shell-safe-b: env(safe-area-inset-bottom, 0px);
+}
+
+/* ═══ Menu ══════════════════════════════════════════════════════════════════════════════ */
+.menu-bar {
+  display: flex; align-items: center; gap: 4px; flex-shrink: 0;
+  min-height: var(--shell-menubar-h); padding: 0 8px; box-sizing: border-box;
+  background: var(--shell-surface); color: var(--shell-text); border-bottom: 1px solid var(--shell-line);
+  position: relative; z-index: 1000; user-select: none; font-family: var(--shell-font);
+}
+.app-brand { display: flex; align-items: center; gap: 7px; font-weight: 800; letter-spacing: .05em; font-size: 12px; color: var(--shell-accent); padding: 0 12px 0 2px; white-space: nowrap; }
+.menu-bar-items { display: flex; align-items: center; gap: 1px; min-width: 0; }
+.menu-list-item {
+  padding: 5px 10px; font: inherit; font-size: 12.5px; color: var(--shell-muted); white-space: nowrap;
+  background: none; border: 0; border-radius: var(--shell-radius-sm); cursor: pointer;
+}
+.menu-list-item:hover, .menu-list-item.active { background: var(--shell-hover); color: var(--shell-text); }
+.menu-bar-status { margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--shell-muted); min-width: 0; }
+.menu-list-overlay { position: fixed; inset: 0; z-index: 998; display: none; }
+.menu-list-overlay.show { display: block; }
+.menu-bar-dropdown {
+  position: absolute; min-width: 230px; padding: 0; z-index: 1002; display: none;
+  background: var(--shell-elevated); color: var(--shell-text); border: 1px solid var(--shell-line-strong);
+  border-radius: var(--shell-radius-md); box-shadow: var(--shell-shadow); font-family: var(--shell-font);
+}
+.menu-bar-dropdown.show { display: block; }
+.menu-tear-off { height: 10px; margin: 4px 8px 2px; border-top: 2px dashed var(--shell-line-strong); cursor: grab; }
+.menu-tear-off:hover { border-color: var(--shell-accent); }
+.menu-bar-dropdown-content { padding: 4px 0; max-height: 75vh; overflow-y: auto; }
+.menu-bar-dropdown-item {
+  display: flex; align-items: center; gap: 8px; width: 100%; box-sizing: border-box;
+  padding: 6px 14px; font: inherit; font-size: 12.5px; text-align: left;
+  color: var(--shell-text); background: none; border: 0; cursor: pointer;
+}
+.menu-bar-dropdown-item:hover { background: var(--shell-hover); }
+.menu-bar-dropdown-item:disabled { opacity: .45; cursor: default; }
+.menu-bar-dropdown-item kbd { margin-left: auto; font: 10px var(--shell-font); color: var(--shell-dim); }
+.menu-bar-dropdown-item .ic { width: 16px; text-align: center; color: var(--shell-muted); }
+.menu-bar-dropdown-sep { height: 1px; margin: 4px 8px; background: var(--shell-line-strong); opacity: .5; }
+.menu-bar-dropdown-label { cursor: default; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--shell-dim); }
+.menu-bar-dropdown-label:hover { background: none; }
+/* torn-off menus (hostKit/menu-tearoff.js) */
+.menu-floating {
+  position: fixed; z-index: 10000; min-width: 200px; overflow: hidden;
+  background: var(--shell-elevated); color: var(--shell-text);
+  border: 1px solid var(--shell-line-strong); border-radius: var(--shell-radius-sm); box-shadow: var(--shell-shadow);
+}
+.menu-floating .menu-bar-dropdown-content { max-height: 400px; overflow-y: auto; }
+.menu-floating-title { position: relative; display: flex; align-items: center; gap: 6px; padding: 5px 6px 5px 10px; font-size: 12px; font-weight: 600; cursor: grab; user-select: none; border-bottom: 1px solid var(--shell-line); }
+.menu-floating-title span { flex: 1; }
+.menu-floating-hint { display: none; font-weight: 400; font-size: 10px; color: var(--shell-accent); }
+.menu-floating.over-canvas .menu-floating-hint { display: inline; }
+.menu-floating-close { border: 0; background: none; cursor: pointer; color: inherit; opacity: .6; padding: 0 4px; }
+.menu-floating-close:hover { opacity: 1; }
+/* press and hold a torn-off menu over the canvas: the title fills, then the menu is placed (menu-tearoff.js, HOLD_MS) */
+.menu-floating-title::after { content: ''; position: absolute; left: 0; bottom: -1px; height: 2px; width: 0; background: var(--shell-accent); }
+.menu-floating.holding .menu-floating-title::after { width: 100%; transition: width 800ms linear; }
+
+/* ☰ — shown on a phone only */
+.shell-ham { display: none; flex: 0 0 auto; width: 40px; height: 36px; margin-right: 2px; padding: 0; border: 0; border-radius: 8px;
+  background: transparent; cursor: pointer; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.shell-ham span { display: block; width: 18px; height: 2px; border-radius: 1px; background: var(--shell-text); }
+.shell-ham:active { background: var(--shell-hover); }
+
+/* ═══ Ribbon ════════════════════════════════════════════════════════════════════════════
+   The layout below is for ribbons the kit BUILDS (.shell-ribbon). An adopted ribbon (Kairos's) keeps its own
+   look; only folding (.ribbon.folded) and the phone rule (folds into the drawer) apply to every ribbon. */
+.shell-ribbon { background: var(--shell-surface); color: var(--shell-text); border-bottom: 1px solid var(--shell-line); flex-shrink: 0; font-family: var(--shell-font); user-select: none; }
+.shell-ribbon .ribbon-header { display: flex; align-items: stretch; }
+.shell-ribbon .ribbon-tabs { display: flex; gap: 0; padding: 0 8px; overflow-x: auto; scrollbar-width: none; }
+.shell-ribbon .ribbon-tabs::-webkit-scrollbar { display: none; }
+.shell-ribbon .ribbon-tab { padding: 7px 14px; color: var(--shell-muted); font: inherit; font-size: 12.5px; font-weight: 500; cursor: pointer; border: 0;
+  background: transparent; border-bottom: 2px solid transparent; white-space: nowrap; }
+.shell-ribbon .ribbon-tab:hover { color: var(--shell-text); background: var(--shell-hover); }
+.shell-ribbon .ribbon-tab.active { color: var(--shell-text); border-bottom-color: var(--shell-accent); }
+.shell-ribbon .ribbon-tab:focus-visible { outline: 2px solid var(--shell-accent); outline-offset: -2px; }
+.shell-ribbon .ribbon-panel { display: none; padding: 4px 8px 2px; border-top: 1px solid var(--shell-line); }
+.shell-ribbon .ribbon-panel.active { display: block; }
+.ribbon.folded .ribbon-panel { display: none; }
+.shell-ribbon .ribbon-panel-row { display: flex; align-items: stretch; gap: 2px; overflow-x: auto; scrollbar-width: thin; }
+.shell-ribbon .ribbon-group { display: flex; flex-direction: column; align-items: stretch; padding: 0 8px; border-right: 1px solid var(--shell-line); flex: 0 0 auto; }
+.shell-ribbon .ribbon-group:last-child { border-right: 0; }
+.shell-ribbon .ribbon-group-body { display: flex; align-items: center; gap: 2px; flex: 1; min-height: 52px; }
+.shell-ribbon .ribbon-group-label { text-align: center; font-size: 10.5px; color: var(--shell-dim); padding: 1px 0 3px; white-space: nowrap; }
+.shell-ribbon .ribbon-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 8px; border: 1px solid transparent; border-radius: var(--shell-radius-sm);
+  background: transparent; color: var(--shell-text); font: inherit; font-size: 12px; cursor: pointer; white-space: nowrap; }
+.shell-ribbon .ribbon-btn:hover { background: var(--shell-hover); }
+.shell-ribbon .ribbon-btn.active { background: var(--shell-accent-soft); border-color: var(--shell-accent); }
+.shell-ribbon .ribbon-btn:disabled { opacity: .45; cursor: default; }
+.shell-ribbon .ribbon-btn.large { flex-direction: column; justify-content: center; gap: 3px; min-width: 52px; height: 52px; padding: 3px 6px; font-size: 11px; }
+.shell-ribbon .ribbon-btn.icon-only { padding: 5px; }
+.shell-ribbon .ribbon-btn svg, .shell-ribbon .ribbon-icon { width: 18px; height: 18px; flex: 0 0 auto; }
+.shell-ribbon .ribbon-btn.large svg { width: 24px; height: 24px; }
+.shell-ribbon .ribbon-glyph { font-size: 15px; line-height: 1; width: 18px; text-align: center; }
+.shell-ribbon .ribbon-btn.large .ribbon-glyph { font-size: 20px; width: auto; }
+.shell-ribbon .ribbon-select { font: inherit; font-size: 12px; padding: 3px 4px; border: 1px solid var(--shell-line-strong); border-radius: var(--shell-radius-sm);
+  background: var(--shell-elevated); color: var(--shell-text); max-width: 160px; }
+.shell-ribbon .ribbon-sep { width: 1px; align-self: stretch; margin: 4px 3px; background: var(--shell-line); }
+
+/* ═══ Body + Left/Right panels ══════════════════════════════════════════════════════════ */
+.shell-body { display: flex; flex: 1 1 auto; min-height: 0; min-width: 0; position: relative; }
+.shell-main { flex: 1 1 auto; min-width: 0; min-height: 0; position: relative; }
+.shell-panel { position: relative; flex: 0 0 auto; display: flex; flex-direction: column; min-height: 0; box-sizing: border-box;
+  background: var(--shell-surface); color: var(--shell-text); font-family: var(--shell-font); font-size: 12.5px; }
+.shell-panel[hidden] { display: none !important; }
+.shell-panel[data-side='left'] { border-right: 1px solid var(--shell-line); }
+.shell-panel[data-side='right'] { border-left: 1px solid var(--shell-line); }
+.shell-panel-head { display: flex; align-items: center; gap: 2px; height: 32px; padding: 0 4px 0 10px; flex: 0 0 auto;
+  border-bottom: 1px solid var(--shell-line); user-select: none; }
+.shell-panel-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--shell-muted); }
+.shell-panel-btn { width: 24px; height: 22px; padding: 0; border: 0; border-radius: 5px; background: transparent; color: var(--shell-muted);
+  font: 13px/1 var(--shell-font); cursor: pointer; flex: 0 0 auto; }
+.shell-panel-btn:hover { background: var(--shell-hover); color: var(--shell-text); }
+.shell-panel-band { display: none; }
+.shell-panel-body { flex: 1 1 auto; min-height: 0; overflow: auto; }
+.shell-panel-grip { position: absolute; top: 0; bottom: 0; width: 6px; cursor: col-resize; z-index: 2; touch-action: none; }
+.shell-panel[data-side='left'] .shell-panel-grip { right: -3px; }
+.shell-panel[data-side='right'] .shell-panel-grip { left: -3px; }
+.shell-panel-grip:hover, .shell-panel.resizing .shell-panel-grip { background: var(--shell-accent); opacity: .5; }
+.shell-panel.resizing { user-select: none; }
+/* folded: a slim titled bar; click it to open */
+.shell-panel.folded { cursor: pointer; }
+.shell-panel.folded .shell-panel-body, .shell-panel.folded .shell-panel-grip,
+.shell-panel.folded .shell-panel-swap, .shell-panel.folded .shell-panel-close { display: none; }
+.shell-panel.folded .shell-panel-head { flex-direction: column; height: auto; padding: 6px 0; border-bottom: 0; gap: 8px; }
+.shell-panel.folded .shell-panel-title { writing-mode: vertical-rl; text-orientation: mixed; overflow: visible; }
+.shell-panel.folded[data-side='left'] .shell-panel-title { transform: rotate(180deg); }
+.shell-panel.folded .shell-panel-fold { order: -1; }
+
+/* tablet: slim bars in the row; an open panel lies OVER the main area (it keeps its width) */
+.shell-tablet .shell-panel:not(.folded) { position: absolute; top: 0; bottom: 0; z-index: 60; box-shadow: 0 8px 30px rgba(0, 0, 0, .22); }
+.shell-tablet .shell-panel[data-side='left']:not(.folded) { left: 0; }
+.shell-tablet .shell-panel[data-side='right']:not(.folded) { right: 0; }
+.shell-tablet .shell-panel-swap { display: none; }
+
+/* ═══ Drawer (the phone's Menu + Ribbon) — GuaP's look ══════════════════════════════════ */
+.shell-drawer-overlay { position: fixed; inset: 0; z-index: 30000; background: rgba(0, 0, 0, .32); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+.shell-drawer-overlay.open { opacity: 1; pointer-events: auto; }
+.shell-drawer { position: fixed; top: 0; bottom: 0; left: 0; z-index: 30001; display: flex; flex-direction: column;
+  box-sizing: border-box; padding: env(safe-area-inset-top, 0px) 0 0 env(safe-area-inset-left, 0px);
+  background: var(--shell-bg); color: var(--shell-text); font-family: var(--shell-font); box-shadow: 4px 0 24px rgba(0, 0, 0, .25);
+  transform: translateX(-104%); transition: transform .24s ease; visibility: hidden; outline: none;
+  touch-action: pan-y; -webkit-tap-highlight-color: transparent; }
+.shell-drawer.open { transform: none; visibility: visible; }
+.shell-drawer[data-side='right'] { left: auto; right: 0; padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) 0 0;
+  transform: translateX(104%); box-shadow: -4px 0 24px rgba(0, 0, 0, .25); }
+.shell-drawer[data-side='right'].open { transform: none; }
+.shell-drawer { width: var(--shell-drawer-w, min(86vw, 360px)); }
+/* modeless (a side menu on a desktop): no dim, a lighter shadow, the page stays usable */
+.shell-drawer.modeless { box-shadow: 0 0 0 1px var(--shell-line), 0 6px 20px rgba(0, 0, 0, .08); }
+.shell-drawer-head { display: flex; align-items: center; gap: 8px; padding: 10px 8px 0 16px; flex: 0 0 auto; }
+.shell-drawer-brand { flex: 1; font-weight: 800; letter-spacing: .05em; font-size: 13px; color: var(--shell-accent); }
+.shell-drawer-close { width: 44px; height: 44px; border: 0; border-radius: 10px; background: transparent; color: var(--shell-muted); font-size: 24px; cursor: pointer; }
+.shell-drawer-close:active { background: var(--shell-hover); }
+/* the mode strip: swipes sideways, endlessly */
+.shell-drawer-modes { flex: 0 0 auto; margin: 10px 12px 12px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; touch-action: pan-x;
+  border-radius: 12px; border: 1px solid var(--shell-line-strong); background: var(--shell-surface); }
+.shell-drawer-modes::-webkit-scrollbar { display: none; }
+.shell-mode-strip { display: flex; padding: 4px; }
+.shell-mode-btn { flex: 0 0 auto; min-width: 72px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 14px; border: 0; border-radius: 8px; background: transparent; color: var(--shell-muted); font: 500 14px var(--shell-font);
+  cursor: pointer; touch-action: manipulation; user-select: none; }
+.shell-mode-btn.active { background: var(--shell-accent-soft); color: var(--shell-accent); font-weight: 600; }
+.shell-mode-ic { font-size: 15px; }
+/* the categories: one per menu and per ribbon tab, endless */
+.shell-drawer-cats { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-width: none;
+  padding: 0 12px; touch-action: pan-y; }
+.shell-drawer-cats::-webkit-scrollbar { display: none; }
+.shell-cats { padding-bottom: 12px; }
+.shell-cat { margin-bottom: 12px; border-radius: 10px; overflow: hidden; background: var(--shell-surface); border: 1px solid var(--shell-line);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .06); }
+.shell-cat-label { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 6px 0 12px; cursor: pointer; user-select: none;
+  font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--shell-muted); background: var(--shell-hover);
+  touch-action: manipulation; }
+.shell-cat.open .shell-cat-label { border-bottom: 1px solid var(--shell-line); }
+.shell-cat-arrow { font-size: 10px; opacity: .8; width: 10px; }
+.shell-cat-name { flex: 1; }
+.shell-cat-pin { width: 36px; height: 36px; border: 0; border-radius: 8px; background: transparent; color: var(--shell-accent); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; }
+.shell-cat-pin:active { background: var(--shell-accent-soft); }
+.shell-cat-rows { display: flex; flex-direction: column; }
+.shell-cat-row { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 16px; border: 0; border-bottom: 1px solid var(--shell-line);
+  background: transparent; color: var(--shell-text); font: 15px var(--shell-font); text-align: left; cursor: pointer; touch-action: manipulation; width: 100%; box-sizing: border-box; }
+.shell-cat-row:last-child { border-bottom: 0; }
+.shell-cat-row:active { background: var(--shell-hover); }
+.shell-cat-row:disabled { opacity: .45; }
+.shell-cat-row.pressed { color: var(--shell-accent); }
+.shell-cat-row.danger, .shell-cat-row.danger .shell-cat-row-ic, .shell-mode-btn.danger { color: var(--shell-danger, #b84a2a); }
+.shell-cat-row kbd { margin-left: auto; font: 11px var(--shell-font); color: var(--shell-dim); }
+.shell-cat-row-ic { width: 20px; display: inline-flex; justify-content: center; color: var(--shell-muted); flex: 0 0 auto; }
+.shell-cat-row-ic:empty { display: none; }
+.shell-cat-row-ic svg { width: 18px; height: 18px; }
+.shell-cat-row-label { flex: 1; min-width: 0; }
+.shell-cat-control select, .shell-cat-control input { font: 14px var(--shell-font); padding: 6px; max-width: 55%; border: 1px solid var(--shell-line-strong);
+  border-radius: 6px; background: var(--shell-elevated); color: var(--shell-text); }
+.shell-cat-sub { padding: 10px 16px 4px; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--shell-dim); }
+.shell-cat-sep { height: 1px; margin: 4px 12px; background: var(--shell-line-strong); opacity: .5; }
+
+/* ═══ OS Dock ═══════════════════════════════════════════════════════════════════════════ */
+.shell-dock { position: fixed; z-index: 20000; display: flex; justify-content: center; align-items: center; pointer-events: none;
+  transition: transform .22s ease; font-family: var(--shell-font); }
+.shell-dock[data-edge='bottom'] { left: 0; right: 0; bottom: calc(10px + var(--shell-safe-b)); }
+.shell-dock[data-edge='left'] { top: 0; bottom: 0; left: 10px; flex-direction: column; }
+.shell-dock[data-edge='right'] { top: 0; bottom: 0; right: 10px; flex-direction: column; }
+.shell-dock.autohide[data-edge='bottom']:not(.shown) { transform: translateY(calc(100% + 48px + var(--shell-safe-b))); }
+.shell-dock.autohide[data-edge='left']:not(.shown) { transform: translateX(calc(-100% - 48px)); }
+.shell-dock.autohide[data-edge='right']:not(.shown) { transform: translateX(calc(100% + 48px)); }
+.shell-dock.autohide:not(.shown) .shell-dock-shelf { box-shadow: none; }
+.shell-dock-shelf { pointer-events: auto; display: flex; align-items: flex-end; gap: 10px; padding: 8px 12px 6px; max-width: calc(100vw - 20px);
+  overflow-x: auto; scrollbar-width: none;
+  background: color-mix(in srgb, var(--shell-surface) 88%, transparent); border: 1px solid var(--shell-line); border-radius: 22px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .14); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+.shell-dock-shelf::-webkit-scrollbar { display: none; }
+.shell-dock[data-edge='left'] .shell-dock-shelf, .shell-dock[data-edge='right'] .shell-dock-shelf {
+  flex-direction: column; align-items: center; padding: 12px 8px; max-height: calc(100vh - 20px); overflow-y: auto; overflow-x: hidden; }
+.shell-dock-app { position: relative; display: flex; flex-direction: column; align-items: center; padding: 0 0 8px; border: 0; background: none; cursor: pointer;
+  transition: transform .15s; touch-action: manipulation; -webkit-tap-highlight-color: transparent; flex: 0 0 auto; }
+.shell-dock[data-edge='left'] .shell-dock-app, .shell-dock[data-edge='right'] .shell-dock-app { padding: 0 8px 0 0; }
+.shell-dock[data-edge='bottom'] .shell-dock-app:hover { transform: translateY(-6px) scale(1.08); }
+.shell-dock[data-edge='left'] .shell-dock-app:hover { transform: translateX(6px) scale(1.08); }
+.shell-dock[data-edge='right'] .shell-dock-app:hover { transform: translateX(-6px) scale(1.08); }
+.shell-dock-app > img, .shell-dock-tile { width: 48px; height: 48px; border-radius: 12px; object-fit: cover; box-sizing: border-box;
+  display: flex; align-items: center; justify-content: center; background: var(--shell-hover); color: var(--shell-text); font: 600 13px var(--shell-font); }
+.shell-dock-tile svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.shell-dock-tile.dark { background: #111214; color: #d9a441; }
+.shell-dock-tile.gold { background: #d9a441; color: #111214; }
+.shell-dock-tile.light { background: #fff; border: 1px solid var(--shell-line); }
+.shell-dock-tile.accent { background: var(--shell-accent); color: #fff; }
+.shell-dock-label { position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); padding: 3px 8px; border-radius: 6px;
+  background: var(--shell-text); color: var(--shell-bg); font-size: 11.5px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .12s; }
+.shell-dock[data-edge='left'] .shell-dock-label { bottom: auto; top: 50%; left: calc(100% + 8px); transform: translateY(-50%); }
+.shell-dock[data-edge='right'] .shell-dock-label { bottom: auto; top: 50%; left: auto; right: calc(100% + 8px); transform: translateY(-50%); }
+.shell-dock-app:hover .shell-dock-label, .shell-dock-app:focus-visible .shell-dock-label { opacity: 1; }
+.shell-dock-app.running::after { content: ''; position: absolute; bottom: 0; left: 50%; margin-left: -2px; width: 4px; height: 4px; border-radius: 2px; background: var(--shell-muted); }
+.shell-dock[data-edge='left'] .shell-dock-app.running::after, .shell-dock[data-edge='right'] .shell-dock-app.running::after { bottom: auto; left: auto; right: 0; top: 50%; margin: -2px 0 0; }
+.shell-dock-app.showing::after { background: #d9a441; width: 6px; height: 6px; border-radius: 3px; margin-left: -3px; }
+.shell-dock-sep { width: 1px; height: 44px; margin: 0 2px 10px; background: var(--shell-line-strong); flex: 0 0 auto; }
+.shell-dock[data-edge='left'] .shell-dock-sep, .shell-dock[data-edge='right'] .shell-dock-sep { width: 44px; height: 1px; margin: 2px 8px 2px 0; }
+.shell-dock-reveal { position: fixed; z-index: 19999; touch-action: none; }   /* a swipe that starts on it is ours, not a page pan */
+.shell-dock-reveal[hidden] { display: none; }
+.shell-dock-reveal[data-edge='bottom'] { left: 0; right: 0; bottom: 0; height: 6px; }
+.shell-dock-reveal[data-edge='left'] { top: 0; bottom: 0; left: 0; width: 6px; }
+.shell-dock-reveal[data-edge='right'] { top: 0; bottom: 0; right: 0; width: 6px; }
+.shell-dock-menu { position: fixed; z-index: 30010; min-width: 180px; padding: 4px 0; background: var(--shell-elevated); color: var(--shell-text);
+  border: 1px solid var(--shell-line-strong); border-radius: var(--shell-radius-md); box-shadow: var(--shell-shadow); font-family: var(--shell-font); }
+.shell-dock-menu-item { display: block; width: 100%; padding: 8px 14px; border: 0; background: none; color: inherit; font: 12.5px var(--shell-font); text-align: left; cursor: pointer; }
+.shell-dock-menu-item:hover { background: var(--shell-hover); }
+
+/* panels living in a canvas's band stack (index.js › attachCanvas) share its room */
+.jsc-host-bands .shell-panel.band-open .shell-panel-body { max-height: var(--jsc-band-max, var(--shell-band-max)); }
+.jsc-host-bands .shell-panel { border-top: 1px solid var(--shell-line) !important; }
+/* the canvas's own ☰ moves into the drawer — one ☰ on a phone */
+.shell-phone.shell-has-canvas .jsc-ham { display: none !important; }
+
+/* ═══ Phone (html.shell-phone — index.js: narrower than 720px or shorter than 480px) ═════ */
+.shell-phone-brand { display: none; }
+.shell-phone .shell-phone-brand { display: flex; }
+.shell-phone .shell-ham { display: inline-flex; }
+.shell-phone .menu-bar { padding-left: max(4px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px));
+  padding-top: env(safe-area-inset-top, 0px); min-height: calc(44px + env(safe-area-inset-top, 0px)); }
+.shell-phone .menu-bar-items, .shell-phone .menu-bar-dropdown, .shell-phone .ribbon { display: none !important; }
+.shell-phone .menu-bar-status { gap: 8px; overflow: hidden; }
+/* the menu bar never widens the page on a phone: what an app puts in it shrinks, and what still does not fit is clipped */
+.shell-phone .menu-bar { overflow: hidden; }
+.shell-phone .menu-bar > * { min-width: 0; flex-shrink: 1; }
+.shell-phone .menu-bar > .shell-ham { flex-shrink: 0; }
+.shell-phone .app-brand { font-size: 13px; padding: 0 6px; }
+/* the body becomes a column: main, then the left bands, then the right ones (TollTally's order) */
+.shell-phone .shell-body { flex-direction: column; }
+.shell-phone .shell-main { order: 1; flex: 1 1 auto; min-height: 120px; }
+.shell-phone .shell-panel { order: 2; width: 100% !important; max-height: none; border: 0 !important; border-top: 1px solid var(--shell-line) !important; }
+.shell-phone .shell-panel[data-side='right'] { order: 3; }
+.shell-phone .shell-panel-head { height: var(--shell-band-head); padding: 0 6px 0 16px; border-bottom: 0; cursor: pointer; touch-action: none; }
+.shell-phone .shell-panel-title { font-size: 13px; letter-spacing: 0; text-transform: none; font-weight: 600; color: var(--shell-text); }
+.shell-phone .shell-panel-band { display: inline-block; width: 40px; height: 32px; border-radius: 8px; background: var(--shell-hover); color: var(--shell-text); font-size: 13px; }
+.shell-phone .shell-panel-fold, .shell-phone .shell-panel-swap, .shell-phone .shell-panel-grip { display: none !important; }
+.shell-phone .shell-panel-close { width: 40px; height: 36px; font-size: 18px; }
+/* the apps' status bar (.status-bar › .status-bar-section, the Kairos family): one line that never widens the page;
+   on a phone its secondary section steps aside (it was what made Peruse's page 604px wide on a 320px phone) */
+.shell-phone .status-bar { overflow: hidden; min-width: 0; white-space: nowrap; }
+.shell-phone .status-bar > .status-bar-section:last-child:not(:first-child) { display: none; }
+.shell-phone .status-bar-section { min-width: 0; overflow: hidden; }
+/* the desk pill's grips are thumb-sized on a phone wherever the pill lives (in a canvas, or on the page) */
+.shell-phone .jsc-desks-grip { min-width: 32px; }
+.shell-phone .shell-panel-body { flex: 0 0 auto; max-height: 0; overflow: auto; transition: max-height .22s ease; overscroll-behavior: contain; }
+.shell-phone .shell-panel.band-open .shell-panel-body { max-height: var(--shell-band-max); border-top: 1px solid var(--shell-line); }
+.shell-phone .shell-panel.folded .shell-panel-head { flex-direction: row; height: var(--shell-band-head); padding: 0 6px 0 16px; }
+.shell-phone .shell-panel.folded .shell-panel-title { writing-mode: horizontal-tb; transform: none; }
+.shell-phone .shell-panel.folded .shell-panel-close { display: inline-block; }
+.shell-phone .shell-panel.folded .shell-panel-body { display: block; }
+.shell-phone .shell-panel.folded { cursor: default; }
+.shell-phone .shell-dock-app > img, .shell-phone .shell-dock-tile { width: 44px; height: 44px; }
+.shell-phone .shell-dock-label { display: none; }
+/* on a phone the edge strip is a thumb's width (and the home-indicator area), so the swipe has somewhere to start */
+.shell-phone .shell-dock-reveal[data-edge='bottom'] { height: max(14px, var(--shell-safe-b)); }
+.shell-phone .shell-dock-reveal[data-edge='left'], .shell-phone .shell-dock-reveal[data-edge='right'] { width: 14px; }
+@media (prefers-reduced-motion: reduce) {
+  .shell-drawer, .shell-drawer-overlay, .shell-dock, .shell-panel-body { transition: none !important; }
+}
